@@ -39,7 +39,7 @@ def update():
 def get_positions():
     """Zwraca wszystkich aktywnych graczy (np. ostatnie 30 sekund)"""
     now = time()
-    active = {k: v for k, v in positions.items() if now - v["last"] < 30}
+    active = {k: v for k, v in positions.items() if now - v["last"] < 10}
     return jsonify(active)
 
 @app.route("/")
