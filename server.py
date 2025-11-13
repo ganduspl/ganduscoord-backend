@@ -13,8 +13,26 @@ def update():
     x = float(request.form.get("x"))
     y = float(request.form.get("y"))
     z = float(request.form.get("z"))
-    world = request.form.get("world")
-    positions[nick] = {"x": x, "y": y, "z": z, "world": world, "last": time()}
+    world_raw = request.form.get("world")
+    # Normalize world names to simple labels for easier display
+    world = world_raw
+    if world_raw is not None:
+        lw = world_raw.lower()
+        if "overworld" in lw:
+            world = "overworld"
+        elif "nether" in lw or "the_nether" in lw:
+            world = "nether"
+        elif "end" in lw or "the_end" in lw:
+            world = "end"
+        else:
+            # strip namespace if present (e.g., minecraft:overworld -> overworld)
+            if ":" in lw:
+                world = lw.split(":", 1)[1]
+            else:
+                world = lw
+    # optional server (IP/address) field sent by clients
+    server = request.form.get("server")
+    positions[nick] = {"x": x, "y": y, "z": z, "world": world, "server": server, "last": time()}
     return "OK"
 
 @app.route("/positions")
